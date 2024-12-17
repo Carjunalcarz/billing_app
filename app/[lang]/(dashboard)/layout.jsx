@@ -9,8 +9,9 @@ const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     redirect("/");
   }
-
   console.log(session);
+
+ 
   const trans = await getDictionary(lang);
 
   return (

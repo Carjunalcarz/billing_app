@@ -64,12 +64,12 @@ const LogInForm = () => {
         email: data.email,
         password: data.password,
         redirect: false,
-        callbackUrl: "/dashboard", // Ensure this is the correct path
+        callbackUrl: "/billing", // Ensure this is the correct path
       });
 
       if (response?.ok) {
         toast.success("Login Successful");
-        window.location.assign("/dashboard"); // Use full URL to avoid conflicts
+        window.location.assign("/billing"); // Use full URL to avoid conflicts
         reset();
       } else if (response?.error) {
         toast.error(response?.error);
@@ -79,7 +79,7 @@ const LogInForm = () => {
 
   return (
     <div className="w-full py-10">
-      <Link href="/dashboard" className="inline-block">
+      <Link href="/billing" className="inline-block">
         <SiteLogo className="h-10 w-10 2xl:w-14 2xl:h-14 text-primary" />
       </Link>
       <div className="2xl:mt-8 mt-6 2xl:text-3xl text-2xl font-bold text-default-900">
@@ -186,7 +186,7 @@ const LogInForm = () => {
           disabled={isPending}
           onClick={() =>
             signIn("google", {
-              callbackUrl: "/dashboard",
+              callbackUrl: "/billing",
             })
           }
         >
@@ -200,7 +200,7 @@ const LogInForm = () => {
           disabled={isPending}
           onClick={() =>
             signIn("github", {
-              callbackUrl: "/dashboard",
+              callbackUrl: "/billing",
               redirect: false,
             })
           }
