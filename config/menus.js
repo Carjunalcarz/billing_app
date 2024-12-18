@@ -57,6 +57,27 @@ export const menusConfig = {
         },
       ],
     },
+    {
+      title: "Service Plans",
+      icon: Diamond,
+      child: [
+        {
+          title: "Add Plans",
+          href: "/serviceplans",
+          icon: Monitor,
+        },
+      ],
+    }, {
+      title: "Subscription",
+      icon: Calendar,
+      child: [
+        {
+          title: "Add Subscriber",
+          href: "/subscription",
+          icon: Users,
+        },
+      ],
+    }
   ],
   sidebarNav: {
     modern: [
@@ -71,6 +92,28 @@ export const menusConfig = {
           },
         ],
       },
+      {
+        title: "Service Plans",
+        icon: Diamond,
+        child: [
+          {
+            title: "Add Plan",
+            href: "/serviceplans",
+            icon: Monitor,
+          },
+        ],
+      },
+      {
+        title: "Subscribers",
+        icon: Calendar,
+        child: [
+          {
+            title: "Add Subscriber",
+            href: "/subscription",
+            icon: Users,
+          },
+        ],
+      }
     ],
     classic: [
       {
@@ -89,6 +132,29 @@ export const menusConfig = {
           },
         ],
       },
+      {
+        title: "Service Plans",
+        icon: Diamond,
+        child: [
+          {
+            title: "Add Plan",
+            href: "/serviceplans",
+            icon: Monitor,
+          },
+        ],
+      },
+      {
+        title: "Subscription",
+        icon: Calendar,
+        child: [
+          {
+            title: "Add Subscriber",
+            href: "/subscription                                                                            ",
+            icon: Users,
+          },
+        ],
+      },
+      
     ],
   },
 };
