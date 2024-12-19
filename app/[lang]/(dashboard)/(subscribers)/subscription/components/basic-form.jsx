@@ -7,29 +7,35 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-const BasicWizard = () => {
+import {
+  Select as CustomSelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
+const BasicWizard = () => {
+  const [plans, setPlans] = useState([]);
   const [users, setUsers] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
-    selectUser: "",
-    speedMbps: 0,
-    dataLimitGB: 0,
-    pricePerMonth: 0,
-    description: "",
+    user: "",
+    servicePlan: "",
     isActive: true,
+    startDate: "",
+    endDate: "",
   });
 
   const initialFormData = {
-    selectUser: "",
-    speedMbps: 0,
-    dataLimitGB: 0,
-    pricePerMonth: 0,
-    description: "",
+    user: "",
+    servicePlan: "",
     isActive: true,
+    startDate: "",
+    endDate: "",
   };
-  console.log(formData);
-  const steps = ["Speed Plan", "Limit", "Price", "Description"];
+ 
+  const steps = ["Speed Plan", "Duration", "Set Status"];
 
   const isStepOptional = (step) => step === 1;
 
@@ -48,6 +54,26 @@ const BasicWizard = () => {
     setFormData(initialFormData);
     setActiveStep(0);
   };
+
+  // Fetch Plans from the API when the component mounts
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/api/service-plans"); // Update with your API URL
+        const data = await response.json();
+
+        if (data.success) {
+          setPlans(data.data); // Set the fetched service plans data
+        } else {
+          console.error("API error:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching service plans:", error);
+      }
+    };
+
+    fetchPlans();
+  }, []);
 
   // Fetch users from the API when the component mounts
   useEffect(() => {
@@ -71,9 +97,10 @@ const BasicWizard = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+  
     try {
       const response = await axios.post(
-        "http://localhost:3002/api/service-plans",
+        "http://localhost:3002/api/subscriptions",
         formData,
         {
           headers: {
@@ -86,7 +113,9 @@ const BasicWizard = () => {
         title: "Submission Successful",
         description: (
           <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <p className="text-primary-foreground">Your data has been submitted:</p>
+            <p className="text-primary-foreground">
+              Your data has been submitted:
+            </p>
             <pre>{JSON.stringify(formData, null, 2)}</pre>
           </div>
         ),
@@ -103,7 +132,14 @@ const BasicWizard = () => {
         title: "Error",
         description: (
           <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <pre className="text-red-600" style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", padding: "10px" }}>
+            <pre
+              className="text-red-600"
+              style={{
+                whiteSpace: "pre-wrap",
+                wordWrap: "break-word",
+                padding: "10px",
+              }}
+            >
               {JSON.stringify(errorMessage, null, 2)}
             </pre>
           </div>
@@ -124,7 +160,15 @@ const BasicWizard = () => {
     // selectedOption contains the { value, label }
     setFormData({
       ...formData,
-      selectUser: selectedOption ? selectedOption.value : "", // Set user id or empty if cleared
+      user: selectedOption ? selectedOption.value : "", // Set user id or empty if cleared
+    });
+  };
+
+  const handlePlanChange = (selectedOption) => {
+    // selectedOption contains the { value, label }
+    setFormData({
+      ...formData,
+      servicePlan: selectedOption ? selectedOption.value : "", // Set user id or empty if cleared
     });
   };
 
@@ -140,6 +184,13 @@ const BasicWizard = () => {
     label: `${user.firstName} ${user.lastName}`, // assuming firstName and lastName are present
   }));
 
+  const plansOptions = plans
+    .filter((plan) => plan.isActive) // Filter out inactive plans
+    .map((plan) => ({
+      value: plan._id, // Assuming _id is the unique identifier
+      label: `${plan.name} - ${plan.speedMbps}MBPS`, // Construct the label only for active plans
+    }));
+
   return (
     <div className="mt-4">
       <Stepper current={activeStep} direction={isTablet && "vertical"}>
@@ -147,7 +198,9 @@ const BasicWizard = () => {
           const stepProps = {};
           const labelProps = {};
           if (isStepOptional(index)) {
-            labelProps.optional = <StepLabel variant="caption">Optional</StepLabel>;
+            labelProps.optional = (
+              <StepLabel variant="caption">Optional</StepLabel>
+            );
           }
           return (
             <Step key={label} {...stepProps}>
@@ -159,7 +212,9 @@ const BasicWizard = () => {
 
       {activeStep === steps.length ? (
         <React.Fragment>
-          <div className="mt-2 mb-2 font-semibold text-center">All steps completed - you're finished</div>
+          <div className="mt-2 mb-2 font-semibold text-center">
+            All steps completed - you're finished
+          </div>
           <div className="flex pt-2">
             <div className="flex-1" />
             <Button
@@ -180,15 +235,21 @@ const BasicWizard = () => {
               {activeStep === 0 && (
                 <>
                   <div className="col-span-12 mt-6 mb-4">
-                    <h4 className="text-sm font-medium text-default-600">Enter Plan Name</h4>
-                    <p className="text-xs text-default-600 mt-1">Fill in the box with correct data</p>
+                    <h4 className="text-sm font-medium text-default-600">
+                      Enter Plan Name
+                    </h4>
+                    <p className="text-xs text-default-600 mt-1">
+                      Fill in the box with correct data
+                    </p>
                   </div>
                   <div className="col-span-12 lg:col-span-6">
-                    <label className="text-sm">Plan Name</label>
+                    <label className="text-sm">Select User</label>
                     <Select
                       className="react-select text-sm"
                       classNamePrefix="select"
-                      value={userOptions.find(option => option.value === formData.selectUser)}
+                      value={userOptions.find(
+                        (option) => option.value === formData.user
+                      )}
                       onChange={handleUserChange} // Handle change to update the selected user ID
                       options={userOptions}
                       isLoading={users.length === 0}
@@ -197,13 +258,18 @@ const BasicWizard = () => {
                     />
                   </div>
                   <div className="col-span-12 lg:col-span-6">
-                    <label className="text-sm">Speed MBPS</label>
-                    <Input
-                      type="text"
-                      placeholder="Speed MBPS"
-                      name="speedMbps"
-                      value={formData.speedMbps}
-                      onChange={handleInputChange}
+                    <label className="text-sm">Select Plan</label>
+                    <Select
+                      className="react-select text-sm"
+                      classNamePrefix="select"
+                      value={plansOptions.find(
+                        (option) => option.value === formData.servicePlan
+                      )}
+                      onChange={handlePlanChange} // Handle change to update the selected user ID
+                      options={plansOptions}
+                      isLoading={plans.length === 0}
+                      isClearable={false}
+                      styles={styles}
                     />
                   </div>
                 </>
@@ -212,31 +278,65 @@ const BasicWizard = () => {
               {activeStep === 1 && (
                 <>
                   <div className="col-span-12 mt-6 mb-4">
-                    <h4 className="text-sm font-medium text-default-600">Enter Plan Name</h4>
-                    <p className="text-xs text-default-600 mt-1">Fill in the box with correct data</p>
+                    <h4 className="text-sm font-medium text-default-600">
+                      Duration
+                    </h4>
+                    <p className="text-xs text-default-600 mt-1">
+                      Fill in the box with correct data
+                    </p>
                   </div>
                   <div className="col-span-12 lg:col-span-6">
-                    <label className="text-sm">Plan Name</label>
-                    <Select
-                      className="react-select text-sm"
-                      classNamePrefix="select"
-                      value={userOptions.find(option => option.value === formData.selectUser)}
-                      onChange={handleUserChange} // Handle change to update the selected user ID
-                      options={userOptions}
-                      isLoading={users.length === 0}
-                      isClearable={false}
-                      styles={styles}
-                    />
-                  </div>
-                  <div className="col-span-12 lg:col-span-6">
-                    <label className="text-sm">Speed MBPS</label>
+                    <label className="text-sm" htmlFor="">
+                      Start Date
+                    </label>
                     <Input
-                      type="text"
-                      placeholder="Speed MBPS"
-                      name="speedMbps"
-                      value={formData.speedMbps}
+                      type="date"
+                      placeholder=""
+                      name="startDate"
+                      value={formData.startDate}
                       onChange={handleInputChange}
                     />
+                  </div>
+                  <div className="col-span-12 lg:col-span-6">
+                    <label className="text-sm" htmlFor="">
+                      End Date
+                    </label>
+                    <Input
+                      type="date"
+                      placeholder=""
+                      name="endDate"
+                      value={formData.endDate}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </>
+              )}
+              {activeStep === 2 && (
+                <>
+                  <div className="col-span-12 mt-6 mb-4">
+                    <h4 className="text-sm font-medium text-default-600">
+                      Set Status
+                    </h4>
+                    <p className="text-xs text-default-600 mt-1">
+                      Set the plan's activation status.
+                    </p>
+                  </div>
+                  <div className="col-span-12 lg:col-span-6">
+                    <label className="text-sm">Activation Status</label>
+                    <CustomSelect
+                      value={formData.isActive.toString()}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, isActive: value === "true" })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="true">Active</SelectItem>
+                        <SelectItem value="false">Inactive</SelectItem>
+                      </SelectContent>
+                    </CustomSelect>
                   </div>
                 </>
               )}
@@ -262,6 +362,17 @@ const BasicWizard = () => {
                 >
                   Next
                 </Button>
+
+                {activeStep === steps.length - 1 && (
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    onClick={onSubmit}
+                    className="ml-2"
+                  >
+                    Submit
+                  </Button>
+                )}
               </div>
             </div>
           </form>

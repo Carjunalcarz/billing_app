@@ -68,12 +68,17 @@ export const menusConfig = {
         },
       ],
     }, {
-      title: "Subscription",
+      title: "Subscribers",
       icon: Calendar,
       child: [
         {
           title: "Add Subscriber",
           href: "/subscription",
+          icon: Users,
+        },
+        {
+          title: "Subscribers",
+          href: "/subscribers",
           icon: Users,
         },
       ],
@@ -112,6 +117,11 @@ export const menusConfig = {
             href: "/subscription",
             icon: Users,
           },
+          {
+            title: "Subscribers",
+            href: "/subscribers",
+            icon: Users,
+          },
         ],
       }
     ],
@@ -144,12 +154,17 @@ export const menusConfig = {
         ],
       },
       {
-        title: "Subscription",
+        title: "Subscribers",
         icon: Calendar,
         child: [
           {
             title: "Add Subscriber",
             href: "/subscription                                                                            ",
+            icon: Users,
+          },
+          {
+            title: "Subscribers",
+            href: "/subscribers                                                                            ",
             icon: Users,
           },
         ],
