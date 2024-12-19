@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "DashTail Next js Admin Template",
+  name: "Alcarz",
   description: null,
   theme: "violet",
   layout: "vertical",
