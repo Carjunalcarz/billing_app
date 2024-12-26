@@ -6,7 +6,7 @@ import BasicWizard from "./components/basic-form";
 const Billing = () => {
   const { data: session, status } = useSession();
 
-  console.log(session);
+  // console.log(session);
 
   return (
     <div>

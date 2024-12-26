@@ -331,9 +331,16 @@ const BasicWizard = () => {
               )}
             </div>
             <div className="mt-6 flex space-x-2">
-              <Button size="sm" variant="outline" onClick={handleBack}>
-                Back
-              </Button>
+            <Button
+                  size="sm"
+                  variant="outline"
+                  color="destructive"
+                  className="cursor-pointer"
+                  onClick={handleBack}
+                  disabled={activeStep === 0}
+                >
+                  Back
+                </Button>
               {activeStep === steps.length - 1 ? (
                 <Button size="sm" onClick={onSubmit}>
                   Submit
