@@ -5,6 +5,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import {
   Select,
   SelectContent,
@@ -55,44 +56,58 @@ const BasicWizard = () => {
     setActiveStep(0); // Optionally, reset the active step (if using a stepper)
   };
 
+  const { data: session } = useSession();
   const onSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission
+    
+    // Retrieve the token from the session
+   
+  
     try {
-      const response = await axios.post(
-        "http://localhost:3002/api/service-plans",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Success toast
-      toast({
-        title: "Submission Successful",
-        description: (
-          <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <p className="text-primary-foreground">
-              Your data has been submitted:
-            </p>
-            <pre>{JSON.stringify(formData, null, 2)}</pre>
-          </div>
-        ),
-      });
-
-      // Reset the form and stepper
-      setFormData(initialFormData);
-      setActiveStep(0);
+      // Check if the session exists and the user has an access token
+      if (session?.user?.accessToken) {
+        const token = session.user.accessToken;
+  
+        // Make the POST request with the token in the headers
+        const response = await axios.post(
+          "http://localhost:3002/api/service-plans",
+          formData,
+          {
+            headers: {
+              "Authorization": `Bearer ${token}`, // Include the token in the Authorization header
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        // Success toast
+        toast({
+          title: "Submission Successful",
+          description: (
+            <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <p className="text-primary-foreground">
+                Your data has been submitted:
+              </p>
+              <pre>{JSON.stringify(formData, null, 2)}</pre>
+            </div>
+          ),
+        });
+  
+        // Reset the form and stepper
+        setFormData(initialFormData);
+        setActiveStep(0);
+      } else {
+        console.error("No access token found");
+        // You can add a toast or error handling here to inform the user that they are not logged in.
+      }
     } catch (error) {
       // Extract and display error message
       const errorMessage = error.response
         ? error.response.data.message || JSON.stringify(error.response.data)
         : error.message;
-
+  
       toast({
         title: "Error",
-
         description: (
           <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
             <pre
@@ -101,7 +116,6 @@ const BasicWizard = () => {
                 whiteSpace: "pre-wrap",
                 wordWrap: "break-word",
                 padding: "10px",
-                
               }}
             >
               {JSON.stringify(errorMessage, null, 2)}
@@ -111,6 +125,7 @@ const BasicWizard = () => {
       });
     }
   };
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

@@ -11,11 +11,14 @@ const session = await getServerSession(authOptions);
   }
 
 
+
  
   const trans = await getDictionary(lang);
+    // Extract token from the session if available
+    const token = session?.accessToken || null; // Assuming the token is stored here
 
   return (
-    <DashBoardLayoutProvider trans={trans}>{children}</DashBoardLayoutProvider>
+    <DashBoardLayoutProvider trans={trans} >{children}</DashBoardLayoutProvider>
   );
 };
 

@@ -1,6 +1,10 @@
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
+<<<<<<< HEAD
 import  FormAutoSize from "./form-auto-size"
+=======
+import { toast } from "@/components/ui/use-toast";
+>>>>>>> 8d8400da9ce1b1b5a0415ad8b8d1e5ac34784113
 import {
   Table,
   TableBody,
@@ -10,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { users } from "./data";
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,6 +54,7 @@ const RowEditingDialog = () => {
 
   // Fetch subscription from the API when the component mounts
   useEffect(() => {
+<<<<<<< HEAD
     const fetchSubscribers = async () => {
       try {
         const response = await fetch("http://localhost:3002/api/subscriptions"); // Update with your API URL
@@ -73,6 +77,80 @@ const RowEditingDialog = () => {
   useEffect(() => {
     console.log("Updated subscriptions:", subscriptions);
   }, [subscriptions]);
+=======
+    fetchSubscribers();
+  }, []);
+
+  // Fetch subscribers data
+  const fetchSubscribers = async () => {
+    try {
+      const response = await fetch("http://localhost:3002/api/subscriptions"); // Update with your API URL
+      const data = await response.json();
+
+      if (data.success) {
+        setSubscriptions(data.data); // Set the fetched service plans data
+      } else {
+        console.error("API error:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching service plans:", error);
+    }
+  };
+
+  // Handle delete and update state
+  const handleDelete = async (e, subscriptionId, item) => {
+    e.preventDefault(); // Prevent default behavior
+    try {
+      // Send DELETE request to the backend
+      const response = await fetch(`http://localhost:3002/api/subscriptions/${subscriptionId}`, {
+        method: 'DELETE',
+      });
+
+      // Log the response for debugging
+      const responseData = await response.json();
+      console.log('Delete response:', responseData);
+
+      if (response.ok) {
+        // Show a success toast message
+        toast({
+          title: "Delete Successful",
+          description: (
+            <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <p className="text-primary-foreground">
+                Your data has been Deleted Successfully
+              </p>
+              {/* Optionally display the deleted item details */}
+              <pre>{JSON.stringify(item, null, 2)}</pre>
+            </div>
+          ),
+        });
+
+        // Remove subscription from state to immediately reflect change without needing to re-fetch
+        setSubscriptions((prevSubscriptions) =>
+          prevSubscriptions.filter((subscription) => subscription._id !== subscriptionId)
+        );
+      } else {
+        console.error('Error response:', responseData);
+        alert(responseData.message || "Failed to delete subscription.");
+      }
+    } catch (error) {
+      // Handle network or unexpected errors
+      console.error("Error deleting subscription:", error);
+      alert("An error occurred while deleting the subscription.");
+    }
+  };
+
+
+  // Toggle subscription active state
+  const handleToggle = async (subscriptionId) => {
+    const updatedSubscriptions = subscriptions.map((subscription) =>
+      subscription._id === subscriptionId
+        ? { ...subscription, isActive: !subscription.isActive }
+        : subscription
+    );
+    setSubscriptions(updatedSubscriptions);
+  };
+>>>>>>> 8d8400da9ce1b1b5a0415ad8b8d1e5ac34784113
 
 
   return (
@@ -81,6 +159,10 @@ const RowEditingDialog = () => {
         <TableRow>
           <TableHead>Client Name</TableHead>
           <TableHead>Plan</TableHead>
+<<<<<<< HEAD
+=======
+          <TableHead>Speed</TableHead>
+>>>>>>> 8d8400da9ce1b1b5a0415ad8b8d1e5ac34784113
           <TableHead>Status</TableHead>
           <TableHead>Action</TableHead>
         </TableRow>
@@ -101,11 +183,28 @@ const RowEditingDialog = () => {
                 {item.servicePlan ? item.servicePlan.name : "No Plan"}
               </TableCell>
 
+<<<<<<< HEAD
               {/* Toggle Switch */}
               <TableCell>
               <Switch
                 id={`switch-${item._id}`}
                 checked={item.isActive}
+=======
+              {/* User's service plan speed */}
+              <TableCell>
+                {item.servicePlan
+                  ? `${item.servicePlan.speedMbps} MBPS`
+                  : "No Speed"}
+              </TableCell>
+
+              {/* Toggle Switch */}
+              <TableCell>
+                <Switch
+                  key={item._id}
+                  id={item._id}
+                  checked={item.isActive}  // Checked if item.isActive is true
+                  onChange={() => handleToggle(item._id)}
+>>>>>>> 8d8400da9ce1b1b5a0415ad8b8d1e5ac34784113
                 />
               </TableCell>
 
@@ -136,7 +235,9 @@ const RowEditingDialog = () => {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Delete</AlertDialogAction>
+                        <AlertDialogAction onClick={(e) => handleDelete(e, item._id)}>
+                          Delete
+                        </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -145,11 +246,11 @@ const RowEditingDialog = () => {
             </TableRow>
           ))
         ) : (
-          <TableRow>
-            <TableCell colSpan={6} className="text-center">
-              No data available
-            </TableCell>
-          </TableRow>
+          <TableRow className="item-center">
+          <TableCell colSpan={2} className="text-center">
+            No data available
+          </TableCell>
+        </TableRow>
         )}
       </TableBody>
     </Table>
@@ -164,14 +265,64 @@ const EditingDialog = ({ subscription }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
+<<<<<<< HEAD
         <Button size="icon" variant="outline" color="secondary" className="h-7 w-7">
+=======
+        <Button
+          size="icon"
+          variant="outline"
+          color="secondary"
+          className="h-7 w-7"
+        >
+>>>>>>> 8d8400da9ce1b1b5a0415ad8b8d1e5ac34784113
           <Icon icon="heroicons:pencil" className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
+<<<<<<< HEAD
           <DialogTitle>Edit Subscription</DialogTitle>
           <FormAutoSize/>
+=======
+          <DialogTitle>Edit Item</DialogTitle>
+          <form action="#" className="space-y-5 pt-4">
+            <div>
+              <Label className="mb-2">Name</Label>
+              <Input placeholder="Name" />
+            </div>
+            <div>
+              <Label className="mb-2">Title</Label>
+              <Input placeholder="Title" />
+            </div>
+            <div>
+              <Label className="mb-2">Email</Label>
+              <Input placeholder="Email" type="email" />
+            </div>
+            <div>
+              <Label className="mb-2">Role</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light">Admin</SelectItem>
+                  <SelectItem value="dark">Owner</SelectItem>
+                  <SelectItem value="system">Member</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex justify-end space-x-3">
+              <DialogClose asChild>
+                <Button type="button" variant="outline" color="destructive">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button color="success">Save</Button>
+              </DialogClose>
+            </div>
+          </form>
+>>>>>>> 8d8400da9ce1b1b5a0415ad8b8d1e5ac34784113
         </DialogHeader>
       </DialogContent>
     </Dialog>

@@ -42,6 +42,7 @@ import {
   CustomIcon,
   Mail,
   Users,
+  User
 } from "@/components/svg";
 
 export const menusConfig = {
@@ -53,7 +54,7 @@ export const menusConfig = {
         {
           title: "Add Client",
           href: "/billing",
-          icon: Users,
+          icon: ChartArea,
         },
       ],
     },
@@ -79,11 +80,14 @@ export const menusConfig = {
         {
           title: "Subscribers",
           href: "/subscribers",
-          icon: Users,
+          icon: Flag,
         },
       ],
     }
   ],
+
+
+
   sidebarNav: {
     modern: [
       {
@@ -93,7 +97,7 @@ export const menusConfig = {
           {
             title: "Add Client",
             href: "/billing",
-            icon: Users,
+            icon: ChartArea,
           },
         ],
       },
@@ -115,12 +119,12 @@ export const menusConfig = {
           {
             title: "Add Subscriber",
             href: "/subscription",
-            icon: Users,
+            icon: ChartBar,
           },
           {
             title: "Subscribers",
             href: "/subscribers",
-            icon: Users,
+            icon: Flag,
           },
         ],
       }
@@ -159,17 +163,17 @@ export const menusConfig = {
         child: [
           {
             title: "Add Subscriber",
-            href: "/subscription                                                                            ",
+            href: "/subscription",
             icon: Users,
           },
           {
             title: "Subscribers",
-            href: "/subscribers                                                                            ",
-            icon: Users,
+            href: "/subscribers",
+            icon: Flag,
           },
         ],
       },
-      
+
     ],
   },
 };
