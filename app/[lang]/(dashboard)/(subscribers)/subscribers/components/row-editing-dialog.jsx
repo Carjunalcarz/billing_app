@@ -1,5 +1,6 @@
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
+import  FormAutoSize from "./form-auto-size"
 import {
   Table,
   TableBody,
@@ -54,7 +55,7 @@ const RowEditingDialog = () => {
       try {
         const response = await fetch("http://localhost:3002/api/subscriptions"); // Update with your API URL
         const data = await response.json();
-  
+
         if (data.success) {
           setSubscriptions(data.data); // Set the fetched service plans data
         } else {
@@ -64,23 +65,22 @@ const RowEditingDialog = () => {
         console.error("Error fetching service plans:", error);
       }
     };
-  
+
     fetchSubscribers();
   }, []);
-  
+
   // Log the subscriptions state whenever it changes
   useEffect(() => {
     console.log("Updated subscriptions:", subscriptions);
   }, [subscriptions]);
 
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="font-semibold">Client Name</TableHead>
+          <TableHead>Client Name</TableHead>
           <TableHead>Plan</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Role</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Action</TableHead>
         </TableRow>
@@ -101,23 +101,18 @@ const RowEditingDialog = () => {
                 {item.servicePlan ? item.servicePlan.name : "No Plan"}
               </TableCell>
 
-              {/* User's email */}
-              <TableCell>{item.user ? item.user.email : "No Email"}</TableCell>
-
-              {/* User's phone number */}
-              <TableCell>
-                {item.user ? item.user.phoneNumber : "No Phone"}
-              </TableCell>
-
               {/* Toggle Switch */}
               <TableCell>
-                <Switch id={item.user?.email || item._id} />
+              <Switch
+                id={`switch-${item._id}`}
+                checked={item.isActive}
+                />
               </TableCell>
 
               {/* Actions */}
               <TableCell className="flex justify-end">
                 <div className="flex gap-3">
-                  <EditingDialog />
+                  <EditingDialog subscription = {item} />
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
@@ -163,63 +158,20 @@ const RowEditingDialog = () => {
 
 export default RowEditingDialog;
 
-const EditingDialog = () => {
+const EditingDialog = ({ subscription }) => {
+  console.log(subscription); // Log subscription for debugging
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          size="icon"
-          variant="outline"
-          color="secondary"
-          className=" h-7 w-7"
-        >
-          <Icon icon="heroicons:pencil" className=" h-4 w-4  " />
+        <Button size="icon" variant="outline" color="secondary" className="h-7 w-7">
+          <Icon icon="heroicons:pencil" className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Item</DialogTitle>
-          <form action="#" className=" space-y-5 pt-4">
-            <div>
-              <Label className="mb-2">Name</Label>
-              <Input placeholder="Name" />
-            </div>
-            {/* end single */}
-            <div>
-              <Label className="mb-2">Title</Label>
-              <Input placeholder="Title" />
-            </div>
-            {/* end single */}
-            <div>
-              <Label className="mb-2">Email</Label>
-              <Input placeholder="Email" type="email" />
-            </div>
-            {/* end single */}
-            <div>
-              <Label className="mb-2">Email</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">Admin</SelectItem>
-                  <SelectItem value="dark">Owner</SelectItem>
-                  <SelectItem value="system">Member</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {/* end single */}
-            <div className="flex justify-end space-x-3">
-              <DialogClose asChild>
-                <Button type="button" variant="outline" color="destructive">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button color="success">Save</Button>
-              </DialogClose>
-            </div>
-          </form>
+          <DialogTitle>Edit Subscription</DialogTitle>
+          <FormAutoSize/>
         </DialogHeader>
       </DialogContent>
     </Dialog>
