@@ -45,8 +45,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import FormAutoSize from "./form-auto-size";
+import { useSession } from "next-auth/react";
 
 const RowEditingDialog = () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const { data: session } = useSession(); // Ensure session is available
   const [subscriptions, setSubscriptions] = useState([]);
 
   // Fetch subscription from the API when the component mounts
@@ -56,17 +59,27 @@ const RowEditingDialog = () => {
 
   // Fetch subscribers data
   const fetchSubscribers = async () => {
-    try {
-      const response = await fetch("http://localhost:3002/api/subscriptions"); // Update with your API URL
-      const data = await response.json();
+    if (session?.user?.accessToken) {
+      const token = session.user.accessToken;
+      try {
+        const response = await fetch(`${apiUrl}/api/subscriptions`,{
+          method : "GET",
+          headers:{
+            "Authorization" : `Bearer ${token}`,
+            "Content-Type" : "application/json"
+          },
+        }); // Update with your API URL
 
-      if (data.success) {
-        setSubscriptions(data.data); // Set the fetched service plans data
-      } else {
-        console.error("API error:", data.message);
+        const data = await response.json();
+
+        if (data.success) {
+          setSubscriptions(data.data); // Set the fetched service plans data
+        } else {
+          console.error("API error:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching service plans:", error);
       }
-    } catch (error) {
-      console.error("Error fetching service plans:", error);
     }
   };
 
@@ -76,7 +89,7 @@ const RowEditingDialog = () => {
     try {
       // Send DELETE request to the backend
       const response = await fetch(
-        `http://localhost:3002/api/subscriptions/${subscriptionId}`,
+        `${apiUrl}/api/subscriptions/${subscriptionId}`,
         {
           method: "DELETE",
         }
@@ -195,7 +208,7 @@ const RowEditingDialog = () => {
                     isActive={item.isActive}
                     plan_id={item.servicePlan._id}
                     subscription={item._id}
-                    fetchSubscribers = {fetchSubscribers}
+                    fetchSubscribers={fetchSubscribers}
                   />
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -253,8 +266,7 @@ const EditingDialog = ({
   isActive,
   plan_id,
   subscription,
-  fetchSubscribers 
-  
+  fetchSubscribers,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -284,8 +296,7 @@ const EditingDialog = ({
             plan_id={plan_id}
             subscription={subscription}
             onClose={handleClose} // Pass the close function to the form
-            fetchSubscribers = {fetchSubscribers}
-
+            fetchSubscribers={fetchSubscribers}
           />
         </DialogHeader>
       </DialogContent>

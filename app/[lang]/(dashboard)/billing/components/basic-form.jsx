@@ -9,7 +9,8 @@ import { useSession } from "next-auth/react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
 const BasicWizard = () => {
-  const { data: session } = useSession();  // Ensure session is available
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const { data: session } = useSession(); // Ensure session is available
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -58,7 +59,12 @@ const BasicWizard = () => {
   const handleNext = () => {
     // Validate current step fields
     if (activeStep === 0) {
-      if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.email) {
+      if (
+        !formData.firstName ||
+        !formData.lastName ||
+        !formData.phoneNumber ||
+        !formData.email
+      ) {
         toast({
           title: "Error",
           description: "Please fill all personal info fields.",
@@ -69,7 +75,12 @@ const BasicWizard = () => {
 
     if (activeStep === 1) {
       // Address validation
-      if (!formData.street || !formData.barangay || !formData.city || !formData.zipCode) {
+      if (
+        !formData.street ||
+        !formData.barangay ||
+        !formData.city ||
+        !formData.zipCode
+      ) {
         toast({
           title: "Error",
           description: "Please fill all address fields.",
@@ -116,16 +127,16 @@ const BasicWizard = () => {
       const token = session?.user?.accessToken;
 
       if (!token) {
-        throw new Error('Authentication token is missing');
+        throw new Error("Authentication token is missing");
       }
 
       const response = await axios.post(
-        'http://localhost:3002/api/forms', 
+        `${apiUrl}/api/forms`,
         formData,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -137,10 +148,9 @@ const BasicWizard = () => {
 
       setFormData(initialFormData);
       setActiveStep(0);
-
     } catch (error) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: `Error: ${error.message}`,
       });
     }
@@ -171,7 +181,9 @@ const BasicWizard = () => {
           const stepProps = {};
           const labelProps = {};
           if (isStepOptional(index)) {
-            labelProps.optional = <StepLabel variant="caption">Optional</StepLabel>;
+            labelProps.optional = (
+              <StepLabel variant="caption">Optional</StepLabel>
+            );
           }
           return (
             <Step key={label} {...stepProps}>
@@ -331,16 +343,16 @@ const BasicWizard = () => {
               )}
             </div>
             <div className="mt-6 flex space-x-2">
-            <Button
-                  size="sm"
-                  variant="outline"
-                  color="destructive"
-                  className="cursor-pointer"
-                  onClick={handleBack}
-                  disabled={activeStep === 0}
-                >
-                  Back
-                </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                color="destructive"
+                className="cursor-pointer"
+                onClick={handleBack}
+                disabled={activeStep === 0}
+              >
+                Back
+              </Button>
               {activeStep === steps.length - 1 ? (
                 <Button size="sm" onClick={onSubmit}>
                   Submit

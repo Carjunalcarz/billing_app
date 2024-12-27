@@ -16,7 +16,9 @@ import {
 } from "@/components/ui/select";
 
 const BasicWizard = () => {
-  const { data: session } = useSession();  // Ensure session is available
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const { data: session } = useSession(); // Ensure session is available
   const [plans, setPlans] = useState([]);
   const [users, setUsers] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
@@ -36,7 +38,6 @@ const BasicWizard = () => {
     endDate: "",
   };
 
-  
   const steps = ["Speed Plan", "Duration", "Set Status"];
 
   const isStepOptional = (step) => step === 1;
@@ -94,13 +95,16 @@ const BasicWizard = () => {
         const token = session.user.accessToken;
 
         try {
-          const response = await fetch("http://localhost:3002/api/service-plans", {
-            method: "GET",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
+          const response = await fetch(
+           `${apiUrl}/api/service-plans`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
           const data = await response.json();
           if (data.success) {
             setPlans(data.data); // Set the fetched service plans data
@@ -125,10 +129,10 @@ const BasicWizard = () => {
         const token = session.user.accessToken;
 
         try {
-          const response = await fetch("http://localhost:3002/api/forms", {
+          const response = await fetch(`${apiUrl}/api/forms`, {
             method: "GET",
             headers: {
-              "Authorization": `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           });
@@ -152,27 +156,27 @@ const BasicWizard = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       // Retrieve the token from session
       const token = session?.user?.accessToken;
-  
+
       // Check if the token is available
       if (!token) {
         throw new Error("Authentication token is missing");
       }
-  
+
       const response = await axios.post(
-        "http://localhost:3002/api/subscriptions",
+        `${apiUrl}/api/subscriptions`,
         formData,
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`, // Add token to Authorization header
+            Authorization: `Bearer ${token}`, // Add token to Authorization header
           },
         }
       );
-  
+
       toast({
         title: "Submission Successful",
         description: (
@@ -184,7 +188,7 @@ const BasicWizard = () => {
           </div>
         ),
       });
-  
+
       // Reset form data and step
       setFormData(initialFormData);
       setActiveStep(0);
@@ -192,7 +196,7 @@ const BasicWizard = () => {
       const errorMessage = error.response
         ? error.response.data.message || JSON.stringify(error.response.data)
         : error.message;
-  
+
       toast({
         title: "Error",
         description: (
@@ -248,12 +252,11 @@ const BasicWizard = () => {
       value: plan._id,
       label: `${plan.name} - ${plan.speedMbps}MBPS`,
     }));
-    const styles = {
-        option: (provided, state) => ({
-          ...provided,
-        }),
-      };
-
+  const styles = {
+    option: (provided, state) => ({
+      ...provided,
+    }),
+  };
 
   return (
     <div className="mt-4">

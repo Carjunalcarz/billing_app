@@ -3,8 +3,12 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { getDictionary } from "@/app/dictionaries";
+
 const layout = async ({ children, params: { lang } }) => {
 const session = await getServerSession(authOptions);
+
+
+// Decode the token
 
   if (!session?.user?.accessToken) {
    
@@ -15,8 +19,6 @@ const session = await getServerSession(authOptions);
 
  
   const trans = await getDictionary(lang);
-    // Extract token from the session if available
-    const token = session?.accessToken || null; // Assuming the token is stored here
 
   return (
     <DashBoardLayoutProvider trans={trans} >{children}</DashBoardLayoutProvider>

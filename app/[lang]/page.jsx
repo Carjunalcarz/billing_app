@@ -7,8 +7,14 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import LogInForm from "@/components/auth/login-form";
+import { useSession } from "next-auth/react";
 
 const LoginPage = () => {
+  const { data: session } = useSession(); // Ensure session is available
+  // if (session?.user?.accessToken) {
+   
+  //   redirect("/");
+  // }
   const [openVideo, setOpenVideo] = useState(false);
   return (
     <>

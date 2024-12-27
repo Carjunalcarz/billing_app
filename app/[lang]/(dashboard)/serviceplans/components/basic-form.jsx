@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
 const BasicWizard = () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     name: "",
@@ -70,7 +71,7 @@ const BasicWizard = () => {
   
         // Make the POST request with the token in the headers
         const response = await axios.post(
-          "http://localhost:3002/api/service-plans",
+          `${apiUrl}/api/service-plans`,
           formData,
           {
             headers: {

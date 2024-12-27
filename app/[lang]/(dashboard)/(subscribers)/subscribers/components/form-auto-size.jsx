@@ -15,6 +15,7 @@ const FormAutoSize = ({
   onClose,
   fetchSubscribers,
 }) => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   // Ensure startDate is a valid Date object before calling toISOString
   const formattedStartDate = startDate
     ? new Date(startDate).toISOString().split("T")[0]
@@ -47,7 +48,7 @@ const FormAutoSize = ({
 
         try {
           const response = await fetch(
-            "http://localhost:3002/api/service-plans",
+            `${apiUrl}/api/service-plans`,
             {
               method: "GET",
               headers: {
@@ -137,7 +138,7 @@ const FormAutoSize = ({
     try {
       // Make the PUT request to update the subscription
       const response = await fetch(
-        `http://localhost:3002/api/subscriptions/${subscription}`,
+        `${apiUrl}/api/subscriptions/${subscription}`,
         {
           method: "PUT",
           headers: {
