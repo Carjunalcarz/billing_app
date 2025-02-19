@@ -126,6 +126,11 @@ export const menusConfig = {
             href: "/subscribers",
             icon: Flag,
           },
+          {
+            title: "Reports",
+            href: "/reports",
+            icon: Flag,
+          },
         ],
       }
     ],
@@ -169,6 +174,11 @@ export const menusConfig = {
           {
             title: "Subscribers",
             href: "/subscribers",
+            icon: Flag,
+          },
+          {
+            title: "Reports",
+            href: "/reports",
             icon: Flag,
           },
         ],

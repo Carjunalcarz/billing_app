@@ -46,7 +46,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import FormAutoSize from "./form-auto-size";
 import { useSession } from "next-auth/react";
-
+import { PrinterIcon } from "@heroicons/react/24/outline";
 const RowEditingDialog = () => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const { data: session } = useSession(); // Ensure session is available
@@ -62,11 +62,11 @@ const RowEditingDialog = () => {
     if (session?.user?.accessToken) {
       const token = session.user.accessToken;
       try {
-        const response = await fetch(`${apiUrl}/api/subscriptions`,{
-          method : "GET",
-          headers:{
-            "Authorization" : `Bearer ${token}`,
-            "Content-Type" : "application/json"
+        const response = await fetch(`${apiUrl}/api/subscriptions`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         }); // Update with your API URL
 
@@ -241,6 +241,15 @@ const RowEditingDialog = () => {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
+
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="h-7 w-7"
+                    color="secondary"
+                  >
+                    <PrinterIcon className="h-6 w-6" />
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>

@@ -1,0 +1,12 @@
+{
+    "ghostMode": false,
+    "notify": false,
+    "server": {
+      "baseDir": ["./", "../"],
+      "routes": {
+        "/activereportsjs/demos/arjs": "node_modules/@mescius/activereportsjs",
+        "/activereportsjs/demos/arjs-localization": "node_modules/@mescius/activereportsjs-i18n"
+      }
+    }
+  }
+  

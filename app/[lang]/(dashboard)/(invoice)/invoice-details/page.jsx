@@ -17,8 +17,35 @@ import { Download } from "lucide-react";
 import { Icon } from "@iconify/react";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { useRef } from "react";
 const InvoicePreview = () => {
+
+   const invoiceRef = useRef();
+
+  const generatePDF = async () => {
+    const canvas = await html2canvas(invoiceRef.current);
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgWidth = 210;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+    pdf.save("invoice.pdf");
+  };
+
+  const handlePrint = () => {
+    const printContents = document.getElementById("print_invoice").innerHTML;
+    const originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+    window.location.reload(); // Reload to restore the page
+  };
+
+
   const columns = [
     {
       id: 1,
@@ -62,9 +89,10 @@ const InvoicePreview = () => {
       </Breadcrumbs>
       <div className="grid grid-cols-12 gap-6 mt-6">
         <div className="col-span-12 ">
-          <Card>
+          <Card id="print_invoice">
+            <div ref={invoiceRef} className="p-4 bg-white">
             <CardContent>
-              <div className="flex gap-6 flex-col md:flex-row pt-8">
+              <div className="flex gap-6 flex-col sm:flex-row pt-8">
                 <div className="flex-1">
                   <Link href="#">
                     <SiteLogo className="w-10 h-10 text-primary mb-2.5" />
@@ -184,15 +212,16 @@ const InvoicePreview = () => {
               <div className="text-xs text-default-800 mt-1">+880 624279888</div>
               <div className="mt-8 text-xs text-default-800">© 2024 DashTail</div>
             </CardContent>
+            </div>
           </Card>
           <div className="mt-8 flex gap-4 justify-end">
-            <Button asChild variant="outline" className="text-xs font-semibold text-primary-500">
+            <Button onClick={generatePDF}  asChild variant="outline" className="text-xs font-semibold text-primary-500">
               <Link href="#">
                 <Download className="w-3.5 h-3.5 ltr:mr-1.5 rtl:ml-1.5" />
                 <span>Invoice PDF</span>
               </Link>
             </Button>
-            <Button className="text-xs font-semibold ">
+            <Button onClick={handlePrint} className="text-xs font-semibold" >
               <Icon icon="heroicons:printer" className="w-5 h-5 ltr:mr-1 rtl:ml-1" /> Print
             </Button>
           </div>

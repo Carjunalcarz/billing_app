@@ -23,7 +23,7 @@ import { SiteLogo } from "@/components/svg";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
 const schema = z.object({
-  name: z.string().min(3, { message: "Name must be at least 3 characters." }),
+  fullname: z.string().min(3, { message: "Name must be at least 3 characters." }),
   email: z.string().email({ message: "Your email is invalid." }),
   password: z.string().min(4),
 });
@@ -55,12 +55,13 @@ const RegForm = () => {
   const onSubmit = (data) => {
     startTransition(async () => {
       let response = await addUser(data);
+      console.log(response);
       if (response?.status === "success") {
-        toast.success(response?.message);
+        toast.success(response?.message); // Green for success
         reset();
         router.push("/");
       } else {
-        toast.error(response?.message);
+        toast.error(response?.error);
       }
     });
   };
@@ -83,7 +84,7 @@ const RegForm = () => {
             </Label>
             <Input
               disabled={isPending}
-              {...register("name")}
+              {...register("fullname")}
               type="text"
               id="name"
               className={cn("", {
