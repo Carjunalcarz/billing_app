@@ -44,6 +44,7 @@ import {
   Users,
   User
 } from "@/components/svg";
+import { PrinterIcon } from "lucide-react";
 
 export const menusConfig = {
   mainNav: [
@@ -69,6 +70,22 @@ export const menusConfig = {
         },
       ],
     }, {
+      title: "Subscribers",
+      icon: Calendar,
+      child: [
+        {
+          title: "Add Subscriber",
+          href: "/subscription",
+          icon: Users,
+        },
+        {
+          title: "Subscribers",
+          href: "/subscribers",
+          icon: Flag,
+        },
+      ],
+    },
+    {
       title: "Subscribers",
       icon: Calendar,
       child: [
@@ -133,6 +150,28 @@ export const menusConfig = {
           },
         ],
       }
+      ,
+      {
+        title: "Invoices",
+        icon: PrinterIcon,
+        child: [
+          {
+            title: "Create Invoice",
+            href: "/create-invoice",
+            icon: ChartBar,
+          },
+          {
+            title: "Invoice Preview",
+            href: "/invoice-details",
+            icon: Flag,
+          },
+          {
+            title: "Invoice List",
+            href: "/invoice-list",
+            icon: Flag,
+          },
+        ],
+      }
     ],
     classic: [
       {
@@ -178,6 +217,27 @@ export const menusConfig = {
           },
           {
             title: "Reports",
+            href: "/reports",
+            icon: Flag,
+          },
+        ],
+      },
+      {
+        title: "Invoice",
+        icon: Calendar,
+        child: [
+          {
+            title: "Create Invoice",
+            href: "/subscription",
+            icon: Users,
+          },
+          {
+            title: "Invoice List",
+            href: "/subscribers",
+            icon: Flag,
+          },
+          {
+            title: "Invoice Details",
             href: "/reports",
             icon: Flag,
           },

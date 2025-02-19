@@ -90,7 +90,7 @@ const InvoicePreview = () => {
       <div className="grid grid-cols-12 gap-6 mt-6">
         <div className="col-span-12 ">
           <Card id="print_invoice">
-            <div ref={invoiceRef} className="p-4 bg-white">
+            <div ref={invoiceRef} className="p-4">
             <CardContent>
               <div className="flex gap-6 flex-col sm:flex-row pt-8">
                 <div className="flex-1">
