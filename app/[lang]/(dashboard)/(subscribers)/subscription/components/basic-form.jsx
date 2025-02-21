@@ -23,7 +23,7 @@ const BasicWizard = () => {
   const [users, setUsers] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
-    user: "",
+    client: "",
     servicePlan: "",
     isActive: true,
     startDate: "",
@@ -31,7 +31,7 @@ const BasicWizard = () => {
   });
 
   const initialFormData = {
-    user: "",
+    client: "",
     servicePlan: "",
     isActive: true,
     startDate: "",
@@ -44,7 +44,7 @@ const BasicWizard = () => {
 
   const handleNext = () => {
     // Check if the current step has valid data
-    if (activeStep === 0 && !formData.user) {
+    if (activeStep === 0 && !formData.client) {
       toast({
         title: "Error",
         description: "Please select a user.",
@@ -228,7 +228,7 @@ const BasicWizard = () => {
   const handleUserChange = (selectedOption) => {
     setFormData({
       ...formData,
-      user: selectedOption ? selectedOption.value : "",
+      client: selectedOption ? selectedOption.value : "",
     });
   };
 
@@ -315,7 +315,7 @@ const BasicWizard = () => {
                       className="react-select text-sm"
                       classNamePrefix="select"
                       value={userOptions.find(
-                        (option) => option.value === formData.user
+                        (option) => option.value === formData.client
                       )}
                       onChange={handleUserChange} // Handle change to update the selected user ID
                       options={userOptions}

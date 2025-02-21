@@ -1,6 +1,8 @@
+"use client";  // Ensure it's a client component
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation"; // Use next/navigation for Next.js 13+
 import {
   Table,
   TableBody,
@@ -47,6 +49,7 @@ import {
 import FormAutoSize from "./form-auto-size";
 import { useSession } from "next-auth/react";
 import { PrinterIcon } from "@heroicons/react/24/outline";
+import { Link } from "lucide-react";
 const RowEditingDialog = () => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const { data: session } = useSession(); // Ensure session is available
@@ -86,12 +89,18 @@ const RowEditingDialog = () => {
   // Handle delete and update state
   const handleDelete = async (e, subscriptionId, item) => {
     e.preventDefault(); // Prevent default behavior
+    if (session?.user?.accessToken) {
+      const token = session.user.accessToken;
     try {
       // Send DELETE request to the backend
       const response = await fetch(
         `${apiUrl}/api/subscriptions/${subscriptionId}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -129,7 +138,7 @@ const RowEditingDialog = () => {
       console.error("Error deleting subscription:", error);
       alert("An error occurred while deleting the subscription.");
     }
-  };
+  }};
 
   // Toggle subscription active state
   const handleToggle = async (subscriptionId) => {
@@ -139,6 +148,11 @@ const RowEditingDialog = () => {
         : subscription
     );
     setSubscriptions(updatedSubscriptions);
+  };
+
+  const router = useRouter();
+  const handlePrint = (id) => {
+    router.push(`/printing/${id}`); // Navigate to dynamic route
   };
 
   return (
@@ -160,8 +174,8 @@ const RowEditingDialog = () => {
             <TableRow key={item._id}>
               {/* User's first name and last name */}
               <TableCell>
-                {item.user
-                  ? `${item.user.firstName} ${item.user.lastName}`
+                {item.client
+                  ? `${item.client.firstName} ${item.client.lastName}`
                   : "No User"}
               </TableCell>
 
@@ -202,7 +216,7 @@ const RowEditingDialog = () => {
               <TableCell className="flex justify-end">
                 <div className="flex gap-3">
                   <EditingDialog
-                    name={`${item.user.firstName} ${item.user.lastName}`}
+                    // name={`${item.client.firstName} ${item.client.lastName}`}
                     startDate={item.startDate}
                     endDate={item.endDate}
                     isActive={item.isActive}
@@ -241,8 +255,8 @@ const RowEditingDialog = () => {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-
                   <Button
+                    onClick={()=>handlePrint(item._id)}
                     size="icon"
                     variant="outline"
                     className="h-7 w-7"
