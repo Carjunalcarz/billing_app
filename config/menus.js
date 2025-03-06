@@ -57,6 +57,11 @@ export const menusConfig = {
           href: "/billing",
           icon: ChartArea,
         },
+        {
+          title: "Create Billing",
+          href: "/create_billing",
+          icon: Book,
+        },
       ],
     },
     {
@@ -115,6 +120,11 @@ export const menusConfig = {
             title: "Add Client",
             href: "/billing",
             icon: ChartArea,
+          },
+          {
+            title: "Create Billing",
+            href: "/create_billing",
+            icon: Book,
           },
         ],
       },
@@ -187,6 +197,11 @@ export const menusConfig = {
             title: "Add Client",
             href: "/billing",
             icon: Users,
+          },
+          {
+            title: "Create Billing",
+            href: "/create_billing",
+            icon: Book,
           },
         ],
       },

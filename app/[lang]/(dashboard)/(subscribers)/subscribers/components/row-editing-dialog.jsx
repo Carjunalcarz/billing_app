@@ -1,4 +1,4 @@
-"use client";  // Ensure it's a client component
+"use client"; // Ensure it's a client component
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
@@ -48,17 +48,20 @@ import {
 } from "@/components/ui/alert-dialog";
 import FormAutoSize from "./form-auto-size";
 import { useSession } from "next-auth/react";
-import { PrinterIcon } from "@heroicons/react/24/outline";
+import { PrinterIcon , BanknotesIcon} from "@heroicons/react/24/outline";
 import { Link } from "lucide-react";
 const RowEditingDialog = () => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const { data: session } = useSession(); // Ensure session is available
+  const { data: session, status } = useSession();
   const [subscriptions, setSubscriptions] = useState([]);
 
   // Fetch subscription from the API when the component mounts
+
   useEffect(() => {
-    fetchSubscribers();
-  }, []);
+    if (status === "authenticated") {
+      fetchSubscribers();
+    }
+  }, [status]); // Fetch only when session is authenticated
 
   // Fetch subscribers data
   const fetchSubscribers = async () => {
@@ -91,54 +94,55 @@ const RowEditingDialog = () => {
     e.preventDefault(); // Prevent default behavior
     if (session?.user?.accessToken) {
       const token = session.user.accessToken;
-    try {
-      // Send DELETE request to the backend
-      const response = await fetch(
-        `${apiUrl}/api/subscriptions/${subscriptionId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Log the response for debugging
-      const responseData = await response.json();
-      console.log("Delete response:", responseData);
-
-      if (response.ok) {
-        // Show a success toast message
-        toast({
-          title: "Delete Successful",
-          description: (
-            <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-              <p className="text-primary-foreground">
-                Your data has been Deleted Successfully
-              </p>
-              {/* Optionally display the deleted item details */}
-              <pre>{JSON.stringify(item, null, 2)}</pre>
-            </div>
-          ),
-        });
-
-        // Remove subscription from state to immediately reflect change without needing to re-fetch
-        setSubscriptions((prevSubscriptions) =>
-          prevSubscriptions.filter(
-            (subscription) => subscription._id !== subscriptionId
-          )
+      try {
+        // Send DELETE request to the backend
+        const response = await fetch(
+          `${apiUrl}/api/subscriptions/${subscriptionId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
-      } else {
-        console.error("Error response:", responseData);
-        alert(responseData.message || "Failed to delete subscription.");
+
+        // Log the response for debugging
+        const responseData = await response.json();
+        console.log("Delete response:", responseData);
+
+        if (response.ok) {
+          // Show a success toast message
+          toast({
+            title: "Delete Successful",
+            description: (
+              <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                <p className="text-primary-foreground">
+                  Your data has been Deleted Successfully
+                </p>
+                {/* Optionally display the deleted item details */}
+                <pre>{JSON.stringify(item, null, 2)}</pre>
+              </div>
+            ),
+          });
+
+          // Remove subscription from state to immediately reflect change without needing to re-fetch
+          setSubscriptions((prevSubscriptions) =>
+            prevSubscriptions.filter(
+              (subscription) => subscription._id !== subscriptionId
+            )
+          );
+        } else {
+          console.error("Error response:", responseData);
+          alert(responseData.message || "Failed to delete subscription.");
+        }
+      } catch (error) {
+        // Handle network or unexpected errors
+        console.error("Error deleting subscription:", error);
+        alert("An error occurred while deleting the subscription.");
       }
-    } catch (error) {
-      // Handle network or unexpected errors
-      console.error("Error deleting subscription:", error);
-      alert("An error occurred while deleting the subscription.");
     }
-  }};
+  };
 
   // Toggle subscription active state
   const handleToggle = async (subscriptionId) => {
@@ -161,10 +165,11 @@ const RowEditingDialog = () => {
         <TableRow>
           <TableHead>Client Name</TableHead>
           <TableHead>Plan</TableHead>
+          <TableHead>Price</TableHead>
           <TableHead>Speed</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Start Date</TableHead>
-          <TableHead>End Date</TableHead>
+          <TableHead>Days</TableHead>
           <TableHead>Action</TableHead>
         </TableRow>
       </TableHeader>
@@ -182,6 +187,10 @@ const RowEditingDialog = () => {
               {/* User's service plan */}
               <TableCell>
                 {item.servicePlan ? item.servicePlan.name : "No Plan"}
+              </TableCell>
+              {/* User's service plan price */}
+              <TableCell>
+                {item.servicePlan ? item.servicePlan.pricePerMonth : "No Price"}
               </TableCell>
 
               {/* User's service plan speed */}
@@ -205,13 +214,22 @@ const RowEditingDialog = () => {
                   ? new Date(item.startDate).toLocaleDateString() // Convert start date to a readable format
                   : "No Start Date"}
               </TableCell>
-              {/* End Date */}
+              {/* Count Days not */}
               <TableCell>
-                {item.servicePlan
-                  ? new Date(item.endDate).toLocaleDateString() // Convert end date to a readable format
-                  : "No End Date"}
+                {item.servicePlan ? (
+                  <>
+                    {/* End Date */}
+                    {Math.floor(
+                      (new Date() - new Date(item.startDate)) /
+                        (1000 * 60 * 60 * 24)
+                    )}{" "}
+                    {/* Days since start */}
+                  </>
+                ) : (
+                  "No End Date"
+                )}
               </TableCell>
-
+             
               {/* Actions */}
               <TableCell className="flex justify-end">
                 <div className="flex gap-3">
@@ -256,7 +274,7 @@ const RowEditingDialog = () => {
                     </AlertDialogContent>
                   </AlertDialog>
                   <Button
-                    onClick={()=>handlePrint(item._id)}
+                    onClick={() => handlePrint(item._id)}
                     size="icon"
                     variant="outline"
                     className="h-7 w-7"
@@ -264,13 +282,23 @@ const RowEditingDialog = () => {
                   >
                     <PrinterIcon className="h-6 w-6" />
                   </Button>
+                  <Button
+                    onClick={() => handlePrint(item._id)}
+                    size="icon"
+                    variant="outline"
+                    className="h-7 w-7"
+                    color="secondary"
+                  >
+                    <BanknotesIcon className="h-6 w-6" />
+                  </Button>
                 </div>
+                
               </TableCell>
             </TableRow>
           ))
         ) : (
           <TableRow className="item-center">
-            <TableCell colSpan={2} className="text-center">
+            <TableCell colSpan={5} className="text-center">
               No data available
             </TableCell>
           </TableRow>

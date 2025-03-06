@@ -102,11 +102,13 @@ const FormAutoSize = ({
     { value: "false", label: "Inactive" },
   ];
 
-  const styles = {
-    option: (provided, state) => ({
-      ...provided,
-    }),
-  };
+const styles = {
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? "#ffffff" : provided.backgroundColor, // White background when selected
+    color: state.isSelected ? "#000000" : provided.color, // Black text when selected
+  }),
+};
 
   // Handle changes in form inputs
   const handleChange = (e) => {
@@ -132,7 +134,7 @@ const FormAutoSize = ({
       startDate: formData.startDate,
       endDate: formData.endDate,
       servicePlan: formData.selectedPlan?.value,
-      isActive: formData.selectedStatus?.value === "true", // Boolean conversion directly
+      isActive: formData.selectedStatus?.value, // Boolean conversion directly
     };
 
     try {
@@ -195,7 +197,7 @@ const FormAutoSize = ({
             />
           </div>
 
-          <div className="w-full">
+          {/* <div className="w-full">
             <label className="text-sm">End Date</label>
             <Input
               type="date"
@@ -204,7 +206,7 @@ const FormAutoSize = ({
               onChange={handleChange}
               placeholder="End Date"
             />
-          </div>
+          </div> */}
 
           {/* Plan Selection */}
           <div className="w-full">

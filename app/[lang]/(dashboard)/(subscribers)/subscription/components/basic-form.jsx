@@ -252,11 +252,13 @@ const BasicWizard = () => {
       value: plan._id,
       label: `${plan.name} - ${plan.speedMbps}MBPS`,
     }));
-  const styles = {
-    option: (provided, state) => ({
-      ...provided,
-    }),
-  };
+    const styles = {
+      option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isSelected ? "#ffffff" : provided.backgroundColor, // White background when selected
+        color: state.isSelected ? "#000000" : provided.color, // Black text when selected
+      }),
+    };
 
   return (
     <div className="mt-4">
