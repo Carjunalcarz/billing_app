@@ -117,7 +117,7 @@ const SelectionOperation = () => {
 
   const router = useRouter();
   const handleBills = (id) => {
-    router.push(`/create_billing/${id}`); // Navigate to dynamic route
+    router.push(`/billing/${id}`); // Navigate to dynamic route
   };
 
   const postBills = async (subscription) => {
@@ -301,7 +301,7 @@ const SelectionOperation = () => {
                       <Icon
                         icon="heroicons:document-text"
                         className={`h-4 w-4 ${
-                          countDaysFromNow(subscription.startDate) > 30
+                          countDaysFromNow(subscription.startDate) >= 30
                             ? "text-red-700"
                             : "text-green-700"
                         }`}
