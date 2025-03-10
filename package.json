@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "set NODE_OPTIONS=--no-deprecation && next dev",
+"dev": 
+    "cross-env NODE_OPTIONS=--no-deprecation next dev -H 192.168.1.89",
     "build": "set NODE_OPTIONS=--no-deprecation && next build",
     "start": "set NODE_OPTIONS=--no-deprecation && next start",
     "lint": "next lint"
@@ -147,6 +148,7 @@
     "@faker-js/faker": "^8.2.0",
     "@svgr/webpack": "^8.1.0",
     "@types/node": "^20.10.0",
-    "@types/react": "18.2.38"
+    "@types/react": "18.2.38",
+    "cross-env": "^7.0.3"
   }
 }

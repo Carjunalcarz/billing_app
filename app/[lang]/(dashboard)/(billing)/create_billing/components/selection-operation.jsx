@@ -266,23 +266,23 @@ const SelectionOperation = () => {
               />
             </TableCell>
 
-            <TableCell className="text-[0.8em]">
+            <TableCell className="text-[0.9em]">
               {subscription.client.firstName} {subscription.client.lastName}
             </TableCell>
-            <TableCell className="text-[0.8em]">
+            <TableCell className="text-[0.9em]">
               {subscription.servicePlan.name} - (
               {subscription.servicePlan.speedMbps} MBPS){" "}
             </TableCell>
-            <TableCell className="text-[0.8em]">
+            <TableCell className="text-[0.9em]">
               ₱ {subscription.servicePlan.pricePerMonth}
             </TableCell>
-            <TableCell className="text-[0.8em]">
+            <TableCell className="text-[0.9em]">
               {formatDate(subscription.startDate)}
             </TableCell>
-            <TableCell className="text-[0.8em]">
+            <TableCell className="text-[0.9em]">
               {countDaysFromNow(subscription.startDate)}
             </TableCell>
-            <TableCell className="text-[0.8em]">
+            <TableCell className="text-[0.9em]">
               {(
                 (subscription.servicePlan.pricePerMonth / 30) *
                 countDaysFromNow(subscription.startDate)

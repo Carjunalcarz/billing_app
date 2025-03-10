@@ -15,9 +15,9 @@ const Footer = ({ handleOpenSearch }) => {
   if (!mounted) {
     return null;
   }
-  if (!isMobile && sidebarType === "module") {
-    return <MobileFooter handleOpenSearch={handleOpenSearch} />;
-  }
+  // if (!isMobile && sidebarType === "module") {
+  //   return <MobileFooter handleOpenSearch={handleOpenSearch} />;
+  // }
 
   if (footerType === "hidden") {
     return null;

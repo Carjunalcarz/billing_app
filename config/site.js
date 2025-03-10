@@ -1,11 +1,11 @@
 export const siteConfig = {
   name: "Alcarz",
   description: null,
-  theme: "violet",
+  theme: "slate",
   layout: "vertical",
   // semi-box, horizontal, vertical
   hideSideBar: false,
-  sidebarType: "module",
+  sidebarType: "classic",
   // popover, classic, module
   sidebarColor: null,
   navbarType: "sticky",
