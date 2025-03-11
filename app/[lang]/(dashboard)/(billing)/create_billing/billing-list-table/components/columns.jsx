@@ -74,7 +74,7 @@ export const columns = (getSubscription)=> [
       <DataTableColumnHeader column={column} title="Full Name" />
     ),
     cell: ({ row }) => <div>{`${row.original?.client?.firstName} ${row.original?.client?.lastName} `}</div>,
-    enableSorting: true,
+    enableSorting: false,
     enableHiding: false,
     filterFn: (row, columnId, filterValue) => {
       const fullName = `${row.original?.client?.firstName} ${row.original?.client?.lastName}`.toLowerCase();
@@ -89,15 +89,17 @@ export const columns = (getSubscription)=> [
     cell: ({ row }) => (
       <div>{row.original?.servicePlan?.name ? row.original?.servicePlan?.name : "N/A"} / {row.original?.servicePlan?.name ? `(${row.original?.servicePlan?.speedMbps}) MBPS`  : "N/A"}</div>
     ),
-    enableSorting: true,
+    enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "Amount",
+    accessorFn: (row) => row.servicePlan?.pricePerMonth || 0, // Ensures sorting works properly
+    id: "pricePerMonth", // Required when using accessorFn
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Amount" />
     ),
-    cell: ({ row }) => <div>₱{row.original.servicePlan.pricePerMonth}</div>,
+    cell: ({ row }) => <div>₱{row.original?.servicePlan?.pricePerMonth}</div>,
+    sortingFn: "basic",
     enableSorting: true,
     enableHiding: false,
   },
@@ -111,24 +113,32 @@ export const columns = (getSubscription)=> [
     enableHiding: false,
   },
   {
-    accessorKey: "countingDays",
+    accessorFn: (row) => countDaysFromNow(row.startDate), // Returns computed days
+    id: "countingDays",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Counting Days" />
     ),
-    cell: ({ row }) => <div>{ countDaysFromNow(formatDate(row.getValue("startDate")))}</div>,
+    cell: ({ row }) => <div>{countDaysFromNow(row.original?.startDate)}</div>,
     enableSorting: true,
     enableHiding: false,
   },
   {
-    accessorKey: "totalAmount",
+    accessorFn: (row) => 
+      (row.servicePlan?.pricePerMonth / 30) * 
+      countDaysFromNow(formatDate(row.startDate)) || 0, // Ensure a valid number
+    id: "totalAmount", // Required when using accessorFn
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Total Amount" />
     ),
     cell: ({ row }) => (
       <div>
-        {(row.original.servicePlan.pricePerMonth/30*countDaysFromNow(formatDate(row.getValue("startDate")))).toFixed(2)}
+        {(
+          (row.original?.servicePlan?.pricePerMonth / 30) * 
+          countDaysFromNow(formatDate(row.original?.startDate))
+        ).toFixed(2)}
       </div>
     ),
+    sortingFn: "basic", // Ensures numeric sorting works
     enableSorting: true,
     enableHiding: false,
   },

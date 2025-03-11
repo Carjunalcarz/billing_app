@@ -17,7 +17,7 @@ const Printing = ({params}) => {
         <CreateBilling id={params.id} session_data = {session} status = {status}/>
       </div>
     </div>
-  );
+  ); 
 };
 
 export default Printing;

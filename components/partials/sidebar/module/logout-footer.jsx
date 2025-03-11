@@ -24,6 +24,7 @@ const LogoutFooter = ({ menus }) => {
         <div className="flex-1">
           <div className="text-default-700 font-semibold text-sm capitalize mb-0.5 truncate">
             {session.user?.name || "Guest"}
+            {/* {console.log(session)} */}
           </div>
           <div className="text-xs text-default-600 truncate">
             {session.user?.email || "No email available"}

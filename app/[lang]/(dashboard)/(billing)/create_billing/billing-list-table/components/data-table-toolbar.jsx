@@ -51,7 +51,7 @@ export function DataTableToolbar({ table }) {
         </div>
         <div className="relative">
           <Input
-            placeholder="Search Invoice..."
+            placeholder="Search Full Name..."
             value={table.getColumn("fullname")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table.getColumn("fullname")?.setFilterValue(event.target.value)
@@ -65,13 +65,13 @@ export function DataTableToolbar({ table }) {
         </div>
       </div>
       <div className="flex-none flex flex-col sm:flex-row sm:items-center  gap-4">
-        {/* {table.getColumn("status") && (
+        {table.getColumn("status") && (
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Select Status"
             options={statuses}
           />
-        )} */}
+        )}
 
         {isFiltered && (
           <Button

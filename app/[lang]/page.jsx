@@ -8,13 +8,13 @@ import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import LogInForm from "@/components/auth/login-form";
 import { useSession } from "next-auth/react";
-
+import { redirect } from 'next/navigation';
 const LoginPage = () => {
   const { data: session } = useSession(); // Ensure session is available
-  // if (session?.user?.accessToken) {
+  if (session?.user?.accessToken) {
    
-  //   redirect("/");
-  // }
+    redirect("/en/billing");
+  }
   const [openVideo, setOpenVideo] = useState(false);
   return (
     <>
