@@ -29,7 +29,6 @@ const formatDate = (isoString) => {
   return moment(isoString).format("MMM DD, YYYY"); // Output: Mar 05, 2025
 };
 
-
 function countDaysFromNow(dateString) {
   const givenDate = new Date(dateString);
   const now = new Date();
@@ -43,7 +42,7 @@ function countDaysFromNow(dateString) {
   return daysDifference - 1;
 }
 
-export const columns = (getSubscription)=> [
+export const columns = (getSubscription) => [
   {
     id: "id",
     header: ({ table }) => (
@@ -73,13 +72,16 @@ export const columns = (getSubscription)=> [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Full Name" />
     ),
-    cell: ({ row }) => <div>{`${row.original?.client?.firstName} ${row.original?.client?.lastName} `}</div>,
+    cell: ({ row }) => (
+      <div>{`${row.original?.client?.firstName} ${row.original?.client?.lastName} `}</div>
+    ),
     enableSorting: false,
     enableHiding: false,
     filterFn: (row, columnId, filterValue) => {
-      const fullName = `${row.original?.client?.firstName} ${row.original?.client?.lastName}`.toLowerCase();
+      const fullName =
+        `${row.original?.client?.firstName} ${row.original?.client?.lastName}`.toLowerCase();
       return fullName.includes(filterValue.toLowerCase());
-    }
+    },
   },
   {
     accessorKey: "PlanSpeed",
@@ -87,7 +89,15 @@ export const columns = (getSubscription)=> [
       <DataTableColumnHeader column={column} title="Plan - (Speed)" />
     ),
     cell: ({ row }) => (
-      <div>{row.original?.servicePlan?.name ? row.original?.servicePlan?.name : "N/A"} / {row.original?.servicePlan?.name ? `(${row.original?.servicePlan?.speedMbps}) MBPS`  : "N/A"}</div>
+      <div>
+        {row.original?.servicePlan?.name
+          ? row.original?.servicePlan?.name
+          : "N/A"}{" "}
+        /{" "}
+        {row.original?.servicePlan?.name
+          ? `(${row.original?.servicePlan?.speedMbps}) MBPS`
+          : "N/A"}
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -123,9 +133,9 @@ export const columns = (getSubscription)=> [
     enableHiding: false,
   },
   {
-    accessorFn: (row) => 
-      (row.servicePlan?.pricePerMonth / 30) * 
-      countDaysFromNow(formatDate(row.startDate)) || 0, // Ensure a valid number
+    accessorFn: (row) =>
+      (row.servicePlan?.pricePerMonth / 30) *
+        countDaysFromNow(formatDate(row.startDate)) || 0, // Ensure a valid number
     id: "totalAmount", // Required when using accessorFn
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Total Amount" />
@@ -133,7 +143,7 @@ export const columns = (getSubscription)=> [
     cell: ({ row }) => (
       <div>
         {(
-          (row.original?.servicePlan?.pricePerMonth / 30) * 
+          (row.original?.servicePlan?.pricePerMonth / 30) *
           countDaysFromNow(formatDate(row.original?.startDate))
         ).toFixed(2)}
       </div>
@@ -145,7 +155,7 @@ export const columns = (getSubscription)=> [
   {
     accessorKey: "actions",
     header: "Actions",
-    
+
     cell: ({ row }) => {
       const router = useRouter();
       const { data: session, status } = useSession(); // ✅ Get session and auth status
@@ -157,7 +167,7 @@ export const columns = (getSubscription)=> [
           (subscription.servicePlan.pricePerMonth / 30) *
           countDaysFromNow(subscription.startDate)
         ).toFixed(2);
-  
+
         const postData = {
           subscription_id: subscription._id,
           servicePlan_id: subscription.servicePlan._id,
@@ -167,41 +177,52 @@ export const columns = (getSubscription)=> [
           balance: 0,
           paymentAmount: 0,
         };
-  
+
         try {
-          
-         
           if (!token) throw new Error("Authentication token is missing");
-  
-          console.log("📤 Sending request to API:", JSON.stringify(postData, null, 2));
-  
+
+          // console.log(
+          //   "📤 Sending request to API:",
+          //   JSON.stringify(postData, null, 2)
+          // );
+
           const response = await createBilling(token, postData);
-  
-          if (!response || response.error) throw new Error(response.error || "Unexpected API error");
-  
+
+          if (!response || response.error)
+            throw new Error(response.error || "Unexpected API error");
+
           toast({
             title: "Submission Successful",
             description: (
               <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                <p className="text-primary-foreground">Your data has been submitted:</p>
-                <pre>{JSON.stringify(postData, null, 2)}</pre>
+                <p className="text-primary-foreground">
+                  Your data has been submitted:
+                </p>
+                {/* <pre>{JSON.stringify(postData, null, 2)}</pre> */}
               </div>
             ),
           });
-  
+
           getSubscription();
         } catch (error) {
           const errorMessage = error.response
             ? error.response.data.message || JSON.stringify(error.response.data)
             : error.message;
-  
+
           console.error("❌ API Request Error:", errorMessage);
-  
+
           toast({
             title: "Error",
             description: (
               <div className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                <pre className="text-red-600" style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", padding: "10px" }}>
+                <pre
+                  className="text-red-600"
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    wordWrap: "break-word",
+                    padding: "10px",
+                  }}
+                >
                   {JSON.stringify(errorMessage, null, 2)}
                 </pre>
               </div>
@@ -209,10 +230,10 @@ export const columns = (getSubscription)=> [
           });
         }
       };
-  
+
       return (
         <div className="flex gap-3 items-center justify-end">
-         <AlertDialog>
+          <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
                 size="icon"
@@ -257,10 +278,8 @@ export const columns = (getSubscription)=> [
           >
             <Icon icon="heroicons:eye" className="h-4 w-4" />
           </Button>
-          
         </div>
       );
     },
   },
-  
 ];

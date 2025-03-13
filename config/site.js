@@ -5,7 +5,7 @@ export const siteConfig = {
   layout: "vertical",
   // semi-box, horizontal, vertical
   hideSideBar: false,
-  sidebarType: "classic",
+  sidebarType: "module",
   // popover, classic, module
   sidebarColor: null,
   navbarType: "sticky",

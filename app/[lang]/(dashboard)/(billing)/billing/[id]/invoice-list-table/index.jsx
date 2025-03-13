@@ -45,7 +45,7 @@ export default function InvoiceListTable({params}) {
 
   return (
     <Fragment>
-      <DataTable data={billings} columns={columns}  />
+      <DataTable data={billings} columns={columns(getBillings)}  />
     </Fragment>
   );
 }

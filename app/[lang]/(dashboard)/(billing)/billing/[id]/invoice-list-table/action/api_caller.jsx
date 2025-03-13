@@ -33,6 +33,28 @@ export const fetchBilling = async (params ,token) => {
   return apiRequest(`/api/billings/${params}`, "GET", null, token);
 };
 
+// API call for fetching subscriptions
+export const updateBilling = async (token , postData) => {
+  const { _id ,  status} = postData; 
+
+
+  return apiRequest(`/api/billings/${_id}`, "PUT",  {status}, token);
+};
+
+// API call for fetching subscriptions
+export const paidBilling = async (token , postData) => {
+  const { _id ,  isPaid} = postData; 
+
+
+  return apiRequest(`/api/billings/${_id}`, "PUT",  {isPaid}, token);
+};
+// API call for fetching subscriptions
+export const deleteBilling = async (token , postData) => {
+  const { _id ,  status} = postData; 
+
+
+  return apiRequest(`/api/billings/${_id}`, "DELETE", null, token);
+};
 // // API call for fetching subscriptions
 // export const createBilling = async (token, postData) => {
 //   return apiRequest("/api/billings/create", "POST", postData, token);

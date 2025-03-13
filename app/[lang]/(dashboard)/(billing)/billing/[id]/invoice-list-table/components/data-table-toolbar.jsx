@@ -87,7 +87,7 @@ export function DataTableToolbar({ table }) {
         <Button asChild>
           <Link href="/create-invoice">
             <Plus className="w-5 h-5 ltr:mr-2 rtl:ml-2" />
-            Create Invoice
+            Approved Billings
           </Link>
         </Button>
       </div>
